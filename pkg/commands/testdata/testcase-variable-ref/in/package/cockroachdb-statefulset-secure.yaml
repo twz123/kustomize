@@ -221,7 +221,8 @@ spec:
         persistentVolumeClaim:
           claimName: datadir
       - name: certs
-        emptyDir: {}
+        secret:
+          secretName: $(CDB_CERTS_TLS_SECRET_NAME)
   updateStrategy:
     type: RollingUpdate
   volumeClaimTemplates:

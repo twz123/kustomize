@@ -102,6 +102,22 @@ apiVersion: v1
 kind: Service
 metadata:
   labels:
+    component: proxy
+  name: dev-base-cockroachdb-proxy
+spec:
+  ports:
+  - name: http
+    port: 80
+    protocol: TCP
+    targetPort: http
+  selector:
+    component: proxy
+  type: ClusterIP
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
     app: cockroachdb
   name: dev-base-cockroachdb-public
 spec:
@@ -114,6 +130,27 @@ spec:
     targetPort: 8080
   selector:
     app: cockroachdb
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    component: proxy
+  name: dev-base-cockroachdb-proxy
+spec:
+  template:
+    spec:
+      containers:
+      - image: nginx:1.1.5
+        name: cockroachdb-proxy
+      ports:
+      - name: http
+        port: 8080
+        protocol: TCP
+      volumes:
+      - name: tls
+        secret:
+          secretName: cockroachdb-tls
 ---
 apiVersion: apps/v1beta1
 kind: StatefulSet
@@ -187,8 +224,9 @@ spec:
       - name: datadir
         persistentVolumeClaim:
           claimName: datadir
-      - emptyDir: {}
-        name: certs
+      - name: certs
+        secret:
+          secretName: cockroachdb-tls
   updateStrategy:
     type: RollingUpdate
   volumeClaimTemplates:
@@ -222,6 +260,33 @@ spec:
             image: cockroachdb/cockroach:v1.1.5
             name: cronjob-example
   schedule: '*/1 * * * *'
+---
+apiVersion: certmanager.k8s.io/v1alpha1
+kind: Certificate
+metadata:
+  name: dev-base-cockroachdb
+spec:
+  secretName: cockroachdb-tls
+---
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  labels:
+    component: proxy
+  name: dev-base-cockroachdb-proxy
+spec:
+  rules:
+  - host: cockroachdb-proxy.example.com
+    http:
+      paths:
+      - backend:
+          serviceName: dev-base-cockroachdb-proxy
+          servicePort: http
+        path: /
+  tls:
+  - hosts:
+    - cockroachdb-proxy.example.com
+    secretName: cockroachdb-tls
 ---
 apiVersion: policy/v1beta1
 kind: PodDisruptionBudget

@@ -41,6 +41,18 @@ diff -u -N /tmp/noop/apps_v1beta1_StatefulSet_cockroachdb.yaml /tmp/transformed/
        terminationGracePeriodSeconds: 60
        volumes:
        - name: datadir
+diff -u -N /tmp/noop/apps_v1_Deployment_cockroachdb-proxy.yaml /tmp/transformed/apps_v1_Deployment_cockroachdb-proxy.yaml
+--- /tmp/noop/apps_v1_Deployment_cockroachdb-proxy.yaml	YYYY-MM-DD HH:MM:SS
++++ /tmp/transformed/apps_v1_Deployment_cockroachdb-proxy.yaml	YYYY-MM-DD HH:MM:SS
+@@ -3,7 +3,7 @@
+ metadata:
+   labels:
+     component: proxy
+-  name: base-cockroachdb-proxy
++  name: dev-base-cockroachdb-proxy
+ spec:
+   template:
+     spec:
 diff -u -N /tmp/noop/batch_v1beta1_CronJob_cronjob-example.yaml /tmp/transformed/batch_v1beta1_CronJob_cronjob-example.yaml
 --- /tmp/noop/batch_v1beta1_CronJob_cronjob-example.yaml	YYYY-MM-DD HH:MM:SS
 +++ /tmp/transformed/batch_v1beta1_CronJob_cronjob-example.yaml	YYYY-MM-DD HH:MM:SS
@@ -68,6 +80,37 @@ diff -u -N /tmp/noop/batch_v1beta1_CronJob_cronjob-example.yaml /tmp/transformed
              image: cockroachdb/cockroach:v1.1.5
              name: cronjob-example
    schedule: '*/1 * * * *'
+diff -u -N /tmp/noop/certmanager.k8s.io_v1alpha1_Certificate_cockroachdb.yaml /tmp/transformed/certmanager.k8s.io_v1alpha1_Certificate_cockroachdb.yaml
+--- /tmp/noop/certmanager.k8s.io_v1alpha1_Certificate_cockroachdb.yaml	YYYY-MM-DD HH:MM:SS
++++ /tmp/transformed/certmanager.k8s.io_v1alpha1_Certificate_cockroachdb.yaml	YYYY-MM-DD HH:MM:SS
+@@ -1,6 +1,6 @@
+ apiVersion: certmanager.k8s.io/v1alpha1
+ kind: Certificate
+ metadata:
+-  name: base-cockroachdb
++  name: dev-base-cockroachdb
+ spec:
+   secretName: cockroachdb-tls
+diff -u -N /tmp/noop/extensions_v1beta1_Ingress_cockroachdb-proxy.yaml /tmp/transformed/extensions_v1beta1_Ingress_cockroachdb-proxy.yaml
+--- /tmp/noop/extensions_v1beta1_Ingress_cockroachdb-proxy.yaml	YYYY-MM-DD HH:MM:SS
++++ /tmp/transformed/extensions_v1beta1_Ingress_cockroachdb-proxy.yaml	YYYY-MM-DD HH:MM:SS
+@@ -3,14 +3,14 @@
+ metadata:
+   labels:
+     component: proxy
+-  name: base-cockroachdb-proxy
++  name: dev-base-cockroachdb-proxy
+ spec:
+   rules:
+   - host: cockroachdb-proxy.example.com
+     http:
+       paths:
+       - backend:
+-          serviceName: base-cockroachdb-proxy
++          serviceName: dev-base-cockroachdb-proxy
+           servicePort: http
+         path: /
+   tls:
 diff -u -N /tmp/noop/policy_v1beta1_PodDisruptionBudget_cockroachdb-budget.yaml /tmp/transformed/policy_v1beta1_PodDisruptionBudget_cockroachdb-budget.yaml
 --- /tmp/noop/policy_v1beta1_PodDisruptionBudget_cockroachdb-budget.yaml	YYYY-MM-DD HH:MM:SS
 +++ /tmp/transformed/policy_v1beta1_PodDisruptionBudget_cockroachdb-budget.yaml	YYYY-MM-DD HH:MM:SS
@@ -160,6 +203,18 @@ diff -u -N /tmp/noop/v1_ServiceAccount_cockroachdb.yaml /tmp/transformed/v1_Serv
      app: cockroachdb
 -  name: base-cockroachdb
 +  name: dev-base-cockroachdb
+diff -u -N /tmp/noop/v1_Service_cockroachdb-proxy.yaml /tmp/transformed/v1_Service_cockroachdb-proxy.yaml
+--- /tmp/noop/v1_Service_cockroachdb-proxy.yaml	YYYY-MM-DD HH:MM:SS
++++ /tmp/transformed/v1_Service_cockroachdb-proxy.yaml	YYYY-MM-DD HH:MM:SS
+@@ -3,7 +3,7 @@
+ metadata:
+   labels:
+     component: proxy
+-  name: base-cockroachdb-proxy
++  name: dev-base-cockroachdb-proxy
+ spec:
+   ports:
+   - name: http
 diff -u -N /tmp/noop/v1_Service_cockroachdb-public.yaml /tmp/transformed/v1_Service_cockroachdb-public.yaml
 --- /tmp/noop/v1_Service_cockroachdb-public.yaml	YYYY-MM-DD HH:MM:SS
 +++ /tmp/transformed/v1_Service_cockroachdb-public.yaml	YYYY-MM-DD HH:MM:SS
